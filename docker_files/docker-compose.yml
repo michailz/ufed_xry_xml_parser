@@ -1,0 +1,35 @@
+version: '3.3'
+
+networks:
+  overlay:
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      - overlay
+    volumes:
+      - ./project:/var/www/
+      - ./apache:/etc/apache2/sites-available/
+
+  pgs:
+    image: "postgres:9.6"
+    volumes:
+       - ./pgs-data:/var/lib/postgresql/data
+    networks:
+       - overlay
+    environment:
+       - POSTGRES_USER=postgres
+       - POSTGRES_PASSWORD=root
+    ports:
+       - "5432:5432"
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+       - overlay
+    ports:
+      - "8080:8080"
